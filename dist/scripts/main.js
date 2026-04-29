@@ -1,11 +1,5 @@
 // scripts/main.ts
-import {
-  world,
-  system,
-  BlockPermutation,
-  CatmullRomSpline,
-  EasingType
-} from "@minecraft/server";
+import { world, system, BlockPermutation, CatmullRomSpline, EasingType } from "@minecraft/server";
 var FLYOVER_DURATION = 10;
 var INIT_RETRY_TICKS = 40;
 var MAX_INIT_RETRIES = 15;

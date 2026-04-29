@@ -1,19 +1,11 @@
 {
   "format_version": 2,
   "header": {
-    "name": "My script behavior pack",
+    "name": "Flyover behavior pack",
     "description": "My behavior pack description",
     "uuid": "f78870a6-b14b-4551-a11a-d6fb7a0e473b",
-    "version": [
-      1,
-      0,
-      0
-    ],
-    "min_engine_version": [
-      1,
-      26,
-      10
-    ]
+    "version": [1, 0, 0],
+    "min_engine_version": [1, 26, 10]
   },
   "modules": [
     {
@@ -21,22 +13,14 @@
       "language": "javascript",
       "type": "script",
       "uuid": "c6e0b568-45b7-44c4-abc4-fd1ef6678af6",
-      "version": [
-        1,
-        0,
-        0
-      ],
+      "version": [1, 0, 0],
       "entry": "scripts/main.js"
     }
   ],
   "dependencies": [
     {
       "module_name": "@minecraft/server",
-      "version": [
-        2,
-        6,
-        0
-      ]
+      "version": [2, 6, 0]
     }
   ]
 }
