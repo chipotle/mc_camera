@@ -1,6 +1,6 @@
 // scripts/main.ts
 import { world, system, BlockPermutation, CatmullRomSpline, EasingType } from "@minecraft/server";
-var FLYOVER_DURATION = 10;
+var FLYOVER_DURATION = 20;
 var INIT_RETRY_TICKS = 40;
 var MAX_INIT_RETRIES = 15;
 var ticksSinceLoad = 0;
@@ -100,19 +100,20 @@ function onButtonPush() {
 }
 function startFlyover(player) {
   const playerLoc = player.location;
-  const flyoverHeight = Math.min(playerLoc.y + 60, 320) - playerLoc.y;
+  const flyoverHeight = Math.min(playerLoc.y + 200, 320) - playerLoc.y;
   const flyover = new CatmullRomSpline();
   flyover.controlPoints = [
-    { x: playerLoc.x - 50, y: playerLoc.y + flyoverHeight * 0.5, z: playerLoc.z - 50 },
-    { x: playerLoc.x + 50, y: playerLoc.y + flyoverHeight, z: playerLoc.z - 50 },
-    { x: playerLoc.x + 50, y: playerLoc.y + flyoverHeight, z: playerLoc.z + 50 },
-    { x: playerLoc.x - 50, y: playerLoc.y + flyoverHeight * 0.66, z: playerLoc.z + 50 },
-    { x: playerLoc.x, y: playerLoc.y + flyoverHeight * 0.33, z: playerLoc.z }
+    { x: playerLoc.x, y: playerLoc.y + 1, z: playerLoc.z },
+    { x: playerLoc.x - 100, y: playerLoc.y + flyoverHeight * 0.5, z: playerLoc.z - 100 },
+    { x: playerLoc.x + 100, y: playerLoc.y + flyoverHeight, z: playerLoc.z - 100 },
+    { x: playerLoc.x + 100, y: playerLoc.y + flyoverHeight, z: playerLoc.z + 100 },
+    { x: playerLoc.x - 100, y: playerLoc.y + flyoverHeight * 0.66, z: playerLoc.z + 100 },
+    { x: playerLoc.x, y: playerLoc.y + 1, z: playerLoc.z }
   ];
   try {
     player.camera.setCamera("minecraft:free", {
-      location: { x: playerLoc.x, y: playerLoc.y + flyoverHeight * 0.33, z: playerLoc.z },
-      rotation: { x: -30, y: 0 }
+      location: { x: playerLoc.x, y: playerLoc.y + 1, z: playerLoc.z },
+      rotation: { x: 0, y: 0 }
     });
   } catch (e) {
     world.sendMessage("Error setting free camera: " + e);
@@ -128,17 +129,17 @@ function startFlyover(player) {
           rotationKeyFrames: [
             {
               timeSeconds: 0,
-              rotation: { x: 0, y: 180, z: 0 },
+              rotation: { x: -20, y: 180, z: 0 },
               easingFunc: EasingType.InOutSine
             },
             {
               timeSeconds: FLYOVER_DURATION * 0.5,
-              rotation: { x: 45, y: 0, z: 0 },
+              rotation: { x: -55, y: 0, z: 0 },
               easingFunc: EasingType.InOutSine
             },
             {
               timeSeconds: FLYOVER_DURATION,
-              rotation: { x: 0, y: 270, z: 0 },
+              rotation: { x: -20, y: 270, z: 0 },
               easingFunc: EasingType.InOutSine
             }
           ]
@@ -149,6 +150,12 @@ function startFlyover(player) {
       world.sendMessage("Error playing animation: " + e);
     }
   }, 2);
+  system.runTimeout(
+    () => {
+      player.camera.clear();
+    },
+    FLYOVER_DURATION * 20 + 1
+  );
 }
 
 //# sourceMappingURL=../debug/main.js.map

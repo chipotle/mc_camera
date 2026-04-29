@@ -1,6 +1,6 @@
 import { world, system, BlockPermutation, Player, CatmullRomSpline, EasingType } from "@minecraft/server";
 
-const FLYOVER_DURATION = 10; // fly over for 10 seconds
+const FLYOVER_DURATION = 20; // fly over for 20 seconds
 const INIT_RETRY_TICKS = 40; // retry every two seconds
 const MAX_INIT_RETRIES = 15; // try to spawn for about 30 sec
 
@@ -124,23 +124,24 @@ function onButtonPush() {
 
 function startFlyover(player: Player) {
   const playerLoc = player.location;
-  const flyoverHeight = Math.min(playerLoc.y + 60, 320) - playerLoc.y;
+  const flyoverHeight = Math.min(playerLoc.y + 200, 320) - playerLoc.y;
 
   // build a CatmullRom spline that arcs over the player
   const flyover = new CatmullRomSpline();
   flyover.controlPoints = [
-    { x: playerLoc.x - 50, y: playerLoc.y + flyoverHeight * 0.5, z: playerLoc.z - 50 },
-    { x: playerLoc.x + 50, y: playerLoc.y + flyoverHeight, z: playerLoc.z - 50 },
-    { x: playerLoc.x + 50, y: playerLoc.y + flyoverHeight, z: playerLoc.z + 50 },
-    { x: playerLoc.x - 50, y: playerLoc.y + flyoverHeight * 0.66, z: playerLoc.z + 50 },
-    { x: playerLoc.x, y: playerLoc.y + flyoverHeight * 0.33, z: playerLoc.z },
+    { x: playerLoc.x, y: playerLoc.y + 1, z: playerLoc.z },
+    { x: playerLoc.x - 100, y: playerLoc.y + flyoverHeight * 0.5, z: playerLoc.z - 100 },
+    { x: playerLoc.x + 100, y: playerLoc.y + flyoverHeight, z: playerLoc.z - 100 },
+    { x: playerLoc.x + 100, y: playerLoc.y + flyoverHeight, z: playerLoc.z + 100 },
+    { x: playerLoc.x - 100, y: playerLoc.y + flyoverHeight * 0.66, z: playerLoc.z + 100 },
+    { x: playerLoc.x, y: playerLoc.y + 1, z: playerLoc.z },
   ];
 
   // set camera to free mode
   try {
     player.camera.setCamera("minecraft:free", {
-      location: { x: playerLoc.x, y: playerLoc.y + flyoverHeight * 0.33, z: playerLoc.z },
-      rotation: { x: -30, y: 0 },
+      location: { x: playerLoc.x, y: playerLoc.y + 1, z: playerLoc.z },
+      rotation: { x: 0, y: 0 },
     });
   } catch (e) {
     world.sendMessage("Error setting free camera: " + e);
@@ -158,17 +159,17 @@ function startFlyover(player: Player) {
           rotationKeyFrames: [
             {
               timeSeconds: 0,
-              rotation: { x: 0, y: 180, z: 0 },
+              rotation: { x: -20, y: 180, z: 0 },
               easingFunc: EasingType.InOutSine,
             },
             {
               timeSeconds: FLYOVER_DURATION * 0.5,
-              rotation: { x: 45, y: 0, z: 0 },
+              rotation: { x: -55, y: 0, z: 0 },
               easingFunc: EasingType.InOutSine,
             },
             {
               timeSeconds: FLYOVER_DURATION,
-              rotation: { x: 0, y: 270, z: 0 },
+              rotation: { x: -20, y: 270, z: 0 },
               easingFunc: EasingType.InOutSine,
             },
           ],
@@ -179,4 +180,11 @@ function startFlyover(player: Player) {
       world.sendMessage("Error playing animation: " + e);
     }
   }, 2); // 2-tick delay for free camera to take effect
+  // clear camera after tour
+  system.runTimeout(
+    () => {
+      player.camera.clear();
+    },
+    FLYOVER_DURATION * 20 + 1
+  );
 }
